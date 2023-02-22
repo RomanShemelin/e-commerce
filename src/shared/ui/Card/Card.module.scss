@@ -1,0 +1,43 @@
+.card {
+  width: 394px;
+  height: 544px;
+}
+.image {
+  width: 394px;
+  height: 360px;
+  margin-bottom: 20px;
+}
+.category {
+  font-weight: 700;
+  font: var(--font-m);
+  color: #afadb5;
+  margin-bottom: 14px;
+}
+.title {
+  width: 346px;
+  height: 34px;
+
+  font-weight: 700;
+  font: var(--font-l);
+  letter-spacing: 0.01em;
+  color: #151411;
+}
+
+.subtitle {
+  width: 346px;
+  height: 32px;
+  font-weight: 500;
+  font: var(--font-m);
+  color: #afadb5;
+}
+.card:hover {
+  cursor: pointer;
+}
+
+.content {
+  border-radius: 6px;
+  font-weight: 700;
+  font: var(--font-l);
+  padding: 18px auto 9px 0;
+  color: #151411;
+}

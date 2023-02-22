@@ -1,0 +1,37 @@
+.button {
+  width: 110px;
+  height: 55px;
+  padding: 15px 28px;
+  font: var(--font-m);
+  line-height: 23px;
+  font-weight: 700;
+  color: #ffffff;
+  background: #518581;
+}
+.button:hover {
+  background: #85aaa7;
+}
+.button_disabled {
+  background: #d9d9d9;
+}
+.button_disabled:hover {
+  background: #d9d9d9;
+}
+.loading {
+  width: 136px;
+  padding: 0;
+  background: #d9d9d9;
+}
+.loading:hover {
+  width: 136px;
+  padding: 0;
+}
+.children {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+path {
+  fill: #ffffff;
+}
