@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@pages/*": ["src/pages/*"],
+      "@shared/ui/*": ["src/shared/ui/*"],
+      "@widgets/*": ["src/widgets/*"],
+      "@shared/assets/*": ["src/shared/assets/icons/*"],
+      "@config/*": ["src/config/*"],
+      "@styles/*": ["src/styles/*"],
+      "@utils/*": ["src/utils/*"]
+    }
+  }
+}
