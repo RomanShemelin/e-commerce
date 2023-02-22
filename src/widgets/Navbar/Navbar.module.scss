@@ -1,0 +1,55 @@
+.Navbar {
+  width: 1440px;
+  height: 120px;
+  margin-bottom: 100px;
+  background: #ffffff;
+  border-bottom: 2px solid #f3f3f3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 100px;
+}
+.link {
+  text-decoration: none;
+  font: var(--font-m);
+  font-weight: 500;
+  color: #151411;
+  position: relative;
+  & :after {
+    content: "";
+    display: block;
+    position: absolute;
+    right: 0;
+    bottom: -45px;
+    width: 0;
+    height: 3px;
+    background-color: black;
+    transition: width 0.5s;
+  }
+  & :hover:after {
+    content: "";
+    width: 100%;
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: -45px;
+    height: 3px;
+    background-color: #518581;
+    transition: width 0.5s;
+  }
+  & :hover {
+    color: #518581;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 44px;
+  gap: 60px;
+}
+.user {
+  display: flex;
+  gap: 30px;
+}
