@@ -1,0 +1,24 @@
+.input {
+  outline: none;
+  width: 350px;
+  height: 84px;
+  padding-left: 28px;
+  color: var(--font-color-secondary);
+  border: none;
+  box-shadow: var(--shadow);
+  font: var(--font-m);
+  font-weight: var(--font-weight-regular);
+  &:focus {
+    border: 1px solid #518581;
+    color: var(--font-color-primary);
+  }
+}
+
+.input_disabled:disabled {
+  font-family: Roboto, Eudoxus Sans, sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 180%;
+  color: var(--font-color-primary);
+  border: none;
+}

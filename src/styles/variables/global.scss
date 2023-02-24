@@ -1,5 +1,5 @@
 :root {
-  --font-family-main: "Eudoxus Sans", normal;
+  --font-family-main: Eudoxus Sans, Roboto, normal;
 
   --font-size-s: 14px;
   --font-line-s: 25px;
@@ -16,4 +16,18 @@
   --font-size-xl: 44px;
   --font-line-xl: 57px;
   --font-xl: var(--font-size-xl) / var(--font-line-xl) var(--font-family-main);
+
+  --font-weight-regular: 500;
+  --font-weight-bold:    700;
+
+  --font-primary-color: #151411;
+  --font-secondary-color: #afadb5;
+  --font-button-color: #ffffff;
+
+  --bg-primary-color: #518581;
+  --bg-primary-color-hover: #85aaa7;
+  --bg-secondary-color: #d9d9d9;
+
+  --shadow: 0px 4px 120px rgba(175, 173, 181, 0.15);
+  --shadow-secondary: 0px 4px 20px rgba(175, 173, 181, 0.2);
 }

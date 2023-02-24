@@ -1,12 +1,18 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { Button } from "@shared/ui/Button";
-import { Card } from "@shared/ui/Card";
-import Navbar from "@widgets/Navbar";
+import { Button } from "@components/Button";
+import { Card } from "@components/Card";
+import { API_ENDPOINTS } from "@configs/api";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 
 import cls from "./ProductDetail.module.scss";
+
+export interface ProductCategory {
+  id: number;
+  name: string;
+  image: string;
+}
 
 export interface Product {
   id: number;
@@ -14,41 +20,44 @@ export interface Product {
   price: number;
   description: string;
   images: string[];
-  category: {
-    id: number;
-    name: string;
-    image: string;
-  };
+  category: ProductCategory;
 }
 
-export function ProductDetail() {
+export const ProductDetail = React.memo(() => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product>();
-  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     const fetch = async () => {
-      const result = await axios({
-        method: "get",
-        url: `https://api.escuelajs.co/api/v1/products/${id}`,
-      });
-      setProduct(result.data);
+      try {
+        const result = await axios({
+          method: "get",
+          url: `${API_ENDPOINTS.PRODUCTS}/${id}`,
+        });
+        setProduct(result.data);
+      } catch (error) {
+        throw new Error("error");
+      }
     };
     fetch();
   }, [id]);
 
   useEffect(() => {
     const getRelatedProducts = async () => {
-      if (product) {
+      try {
+        if (!product) return;
         const result = await axios({
           method: "get",
-          url: `https://api.escuelajs.co/api/v1/products/?categoryId=${product.category.id}`,
+          url: `${API_ENDPOINTS.PRODUCTS}/?categoryId=${product.category.id}`,
         });
         const filteredData = result.data
           .filter((product: Product) => product.id !== Number(id))
           .slice(0, 3);
         setRelatedProducts(filteredData);
+      } catch (error) {
+        throw new Error("error");
       }
     };
     getRelatedProducts();
@@ -56,7 +65,6 @@ export function ProductDetail() {
 
   return (
     <div className={cls.ProductDetail}>
-      <Navbar />
       {product && (
         <div className={cls.content}>
           <img
@@ -89,4 +97,4 @@ export function ProductDetail() {
       </div>
     </div>
   );
-}
+});

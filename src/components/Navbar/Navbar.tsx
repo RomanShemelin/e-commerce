@@ -1,6 +1,6 @@
-import BagIcon from "@shared/assets/bag.svg";
-import LogoIcon from "@shared/assets/logo.png";
-import UserIcon from "@shared/assets/user.svg";
+import BagIcon from "@icons/bag.svg";
+import LogoIcon from "@icons/logo.png";
+import UserIcon from "@icons/user.svg";
 import { Link } from "react-router-dom";
 
 import cls from "./Navbar.module.scss";

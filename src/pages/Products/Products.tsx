@@ -1,51 +1,58 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
+import { Button } from "@components/Button";
+import { Card } from "@components/Card";
+import { Input } from "@components/Input";
+import { Loader, LoaderSize } from "@components/Loader";
+import { API_ENDPOINTS } from "@configs/api";
+import FilterIcon from "@icons/filter.svg";
+import SearchIcon from "@icons/search-normal.svg";
 import { Product } from "@pages/ProductDetail";
-import FilterIcon from "@shared/assets/filter.svg";
-import SearchIcon from "@shared/assets/search-normal.svg";
-import { Button } from "@shared/ui/Button";
-import { Card } from "@shared/ui/Card";
-import { Input } from "@shared/ui/Input";
-import { Loader, LoaderSize } from "@shared/ui/Loader";
-import Navbar from "@widgets/Navbar";
 import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useNavigate } from "react-router-dom";
 
 import cls from "./Products.module.scss";
 
-export default function Products() {
+const Products = () => {
   const [inputValue, setInputValue] = useState("");
   const [products, setProducts] = useState<Product[]>([]);
   const [page, setPage] = useState(0);
-  const [totalProducts, setTotalProducts] = useState([]);
+  const [totalProducts, setTotalProducts] = useState<Product[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const countProducts = async () => {
-      const result = await axios({
-        method: "get",
-        url: "https://api.escuelajs.co/api/v1/products",
-      });
-      setTotalProducts(result.data);
+      try {
+        const result = await axios({
+          method: "get",
+          url: API_ENDPOINTS.PRODUCTS,
+        });
+        setTotalProducts(result.data);
+      } catch (error) {
+        throw new Error("error");
+      }
     };
     countProducts();
   }, []);
 
   useEffect(() => {
     const fetch = async () => {
-      const result = await axios({
-        method: "get",
-        url: `https://api.escuelajs.co/api/v1/products?offset=${page}&limit=10`,
-      });
-      setProducts((products) => [...products, ...result.data]);
+      try {
+        const result = await axios({
+          method: "get",
+          url: `${API_ENDPOINTS.PRODUCTS}?offset=${page}&limit=10`,
+        });
+        setProducts((products) => [...products, ...result.data]);
+      } catch (error) {
+        throw new Error("error");
+      }
     };
     fetch();
   }, [page]);
 
   return (
     <div className={cls.Products}>
-      <Navbar />
       <div className={cls.container}>
         <h1>Products</h1>
         <p className={cls.subtitle}>
@@ -60,7 +67,7 @@ export default function Products() {
               onChange={setInputValue}
               placeholder="Search property"
             />
-            <Button className={cls.find_button}>Find Now</Button>
+            <Button>Find Now</Button>
           </div>
           <Button className={cls.filter_button}>
             <img src={FilterIcon} alt="filter" />
@@ -69,19 +76,18 @@ export default function Products() {
         </div>
         <div className={cls.products_info}>
           <h2>Total Product</h2>
-          <div className={cls._count}>{totalProducts.length}</div>
+          <div className={cls.count}>{totalProducts.length}</div>
         </div>
       </div>
       <InfiniteScroll
+        className={cls.infinite_scroll}
         dataLength={products.length}
-        next={() => setPage(page + 10)}
-        hasMore={products.length < 200}
-        loader={<Loader size={LoaderSize.l} />}
-        endMessage={
-          <p style={{ textAlign: "center" }}>
-            <b>You have seen it all</b>
-          </p>
+        next={() => setPage((prevPage) => prevPage + 10)}
+        hasMore={
+          products.length === 0 || totalProducts.length !== products.length
         }
+        loader={<Loader size={LoaderSize.l} />}
+        endMessage={<h2>You have seen it all</h2>}
       >
         <div className={cls.products_list}>
           {products.map((product: Product) => (
@@ -99,4 +105,5 @@ export default function Products() {
       </InfiniteScroll>
     </div>
   );
-}
+};
+export default React.memo(Products);
