@@ -25,7 +25,7 @@ export const Input: FC<InputProps> = ({
   return (
     <>
       <input
-        className={cn(className, cls.input, disabled && cls.input_disabled)}
+        className={cn(className, cls.input)}
         type="text"
         value={value}
         disabled={disabled}

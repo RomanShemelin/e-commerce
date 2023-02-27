@@ -21,7 +21,7 @@ export const Card: FC<CardProps> = ({
   onClick,
 }) => (
   <div className={cls.card} onClick={onClick}>
-    <img className={cls.image} src={image} alt={""} />
+    <img className={cls.image} src={image} alt={title as string} />
     <div className={cls.category}>{category}</div>
     <div className={cls.title}>{title}</div>
     <div className={cls.subtitle}>{subtitle}</div>

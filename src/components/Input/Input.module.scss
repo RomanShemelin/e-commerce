@@ -12,13 +12,12 @@
     border: 1px solid #518581;
     color: var(--font-color-primary);
   }
-}
-
-.input_disabled:disabled {
-  font-family: Roboto, Eudoxus Sans, sans-serif;
-  font-weight: 400;
-  font-size: 18px;
-  line-height: 180%;
-  color: var(--font-color-primary);
-  border: none;
+  &:disabled {
+    font-family: Roboto, Eudoxus Sans, sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 180%;
+    color: var(--font-color-primary);
+    border: none;
+  }
 }

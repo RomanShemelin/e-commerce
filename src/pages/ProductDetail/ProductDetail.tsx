@@ -23,7 +23,7 @@ export interface Product {
   category: ProductCategory;
 }
 
-export const ProductDetail = React.memo(() => {
+const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product>();
@@ -97,4 +97,5 @@ export const ProductDetail = React.memo(() => {
       </div>
     </div>
   );
-});
+};
+export default React.memo(ProductDetail);

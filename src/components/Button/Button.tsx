@@ -25,11 +25,11 @@ export const Button: FC<ButtonProps> = ({
         loading && cls.loading,
         disabled && cls.button_disabled
       )}
-      disabled={loading ? true : disabled}
+      disabled={loading || disabled}
       {...otherProps}
     >
       {loading ? (
-        <div className={cn(cls.children)}>
+        <div className={cls.children}>
           <div>
             <Loader size={LoaderSize.s} />
           </div>
