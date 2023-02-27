@@ -1,0 +1,104 @@
+.Products {
+  width: 1440px;
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    & h1 {
+      font-family: var(--font-family-main);
+      font-weight: var(--font-weight-bold);
+      font-size: 64px;
+      line-height: 130%;
+      margin-bottom: 20px;
+    }
+    .subtitle {
+      width: 600px;
+      height: 64px;
+      font-weight: 500;
+      font: var(--font-m);
+      font-weight: var(--font-weight-regular);
+      color: var(--font-secondary-color);
+      text-align: center;
+      margin-bottom: 80px;
+    }
+    .search_container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+      margin: 0 100px 50px 100px;
+    }
+    .search {
+      width: 1020px;
+      height: 84px;
+      padding: 0 28px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      & Input {
+        flex-grow: 1;
+      }
+    }
+    .products_info {
+      align-self: start;
+      margin-left: 100px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 0px;
+      gap: 10px;
+      width: 356px;
+      height: 57px;
+      margin-bottom: 50px;
+
+      & h2 {
+        font: var(--font-xl);
+        font-weight: var(--font-weight-bold);
+      }
+      .count {
+        width: 60px;
+        height: 30px;
+        color: var(--bg-primary-color);
+        font-size: 16px;
+        line-height: 130%;
+        font-weight: var(--font-weight-bold);
+        border-radius: 20px;
+        padding: 5px 16px;
+        background: #f9f9f9;
+      }
+    }
+  }
+
+  .products_list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 29px;
+    margin: 0 100px 80px;
+  }
+  .filter_button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 26px 52px;
+    width: 190px;
+    height: 84px;
+    background: var(--font-button-color);
+    font: var(--font-m);
+    font-weight: var(--font-weight-regular);
+    color: var(--font-primary-color);
+    box-shadow: var(--shadow-secondary);
+  }
+}
+.infinite_scroll {
+  text-align: center;
+  margin-bottom: 50px;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
