@@ -1,55 +1,44 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import { Button } from "@components/Button";
 import { Card } from "@components/Card";
 import { Input } from "@components/Input";
 import { Loader, LoaderSize } from "@components/Loader";
-import { API_ENDPOINTS } from "@configs/api";
 import FilterIcon from "@icons/filter.svg";
 import SearchIcon from "@icons/search-normal.svg";
 import { Product } from "@pages/ProductDetail";
-import axios from "axios";
+import ProductsStore from "@store/ProductsStore";
+import { useLocalStore } from "@utils/useLocalStore";
+import { observer } from "mobx-react-lite";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import cls from "./Products.module.scss";
 
-const Products = () => {
-  const [inputValue, setInputValue] = useState("");
-  const [products, setProducts] = useState<Product[]>([]);
-  const [page, setPage] = useState(0);
-  const [totalProducts, setTotalProducts] = useState<Product[]>([]);
+const Products = observer(() => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const productsStore = useLocalStore(() => new ProductsStore());
 
   useEffect(() => {
-    const countProducts = async () => {
-      try {
-        const result = await axios({
-          method: "get",
-          url: API_ENDPOINTS.PRODUCTS,
-        });
-        setTotalProducts(result.data);
-      } catch (error) {
-        throw new Error("error");
-      }
-    };
-    countProducts();
+    productsStore.searchTitle = searchParams.get("search") || "";
+    productsStore.getProductsList();
   }, []);
 
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        const result = await axios({
-          method: "get",
-          url: `${API_ENDPOINTS.PRODUCTS}?offset=${page}&limit=10`,
-        });
-        setProducts((products) => [...products, ...result.data]);
-      } catch (error) {
-        throw new Error("error");
-      }
-    };
-    fetch();
-  }, [page]);
+  const searchHandler = (title: string) => {
+    let search;
+    if (title) {
+      search = {
+        search: title,
+      };
+    } else {
+      search = {
+        search: "",
+      };
+    }
+    setSearchParams(search);
+    productsStore.hasMoreData = true;
+  };
 
   return (
     <div className={cls.Products}>
@@ -63,11 +52,21 @@ const Products = () => {
           <div className={cls.search}>
             <img src={SearchIcon} alt="search" />
             <Input
-              value={inputValue}
-              onChange={setInputValue}
+              value={searchParams.get("search") || ""}
+              onChange={searchHandler}
               placeholder="Search property"
             />
-            <Button>Find Now</Button>
+            <Button
+              onClick={() => {
+                productsStore.clearProductList();
+                productsStore.productsPage = 0;
+                productsStore.getProductsList();
+              }}
+              loading={productsStore.meta === "loading"}
+              disabled={!productsStore.hasMoreData}
+            >
+              Find Now
+            </Button>
           </div>
           <Button className={cls.filter_button}>
             <img src={FilterIcon} alt="filter" />
@@ -76,21 +75,30 @@ const Products = () => {
         </div>
         <div className={cls.products_info}>
           <h2>Total Product</h2>
-          <div className={cls.count}>{totalProducts.length}</div>
+          <div className={cls.count}>
+            {productsStore.totalProductsList.length}
+          </div>
         </div>
       </div>
       <InfiniteScroll
         className={cls.infinite_scroll}
-        dataLength={products.length}
-        next={() => setPage((prevPage) => prevPage + 10)}
+        dataLength={productsStore.totalProductsList.length}
+        next={() => productsStore.getProductsList()}
         hasMore={
-          products.length === 0 || totalProducts.length !== products.length
+          productsStore.totalProductsList.length !== 0 &&
+          productsStore.hasMoreData
         }
         loader={<Loader size={LoaderSize.l} />}
-        endMessage={<h2>You have seen it all</h2>}
+        endMessage={
+          productsStore.meta === "error" ? (
+            <h2>Network error, please try again later</h2>
+          ) : (
+            <h2>You have seen it all</h2>
+          )
+        }
       >
         <div className={cls.products_list}>
-          {products.map((product: Product) => (
+          {productsStore.totalProductsList.map((product: Product) => (
             <Card
               key={product.id}
               id={product.id}
@@ -105,5 +113,5 @@ const Products = () => {
       </InfiniteScroll>
     </div>
   );
-};
+});
 export default React.memo(Products);
