@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, memo } from "react";
 
 import cn from "classnames";
 
@@ -11,27 +11,23 @@ export type InputProps = Omit<
   value: string;
   onChange: (value: string) => void;
 };
-export const Input: FC<InputProps> = ({
-  className,
-  value,
-  onChange,
-  disabled,
-  ...otherProps
-}) => {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value);
-  };
+export const Input: FC<InputProps> = memo(
+  ({ className, value, onChange, disabled, ...otherProps }) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      onChange(e.target.value);
+    };
 
-  return (
-    <>
-      <input
-        className={cn(className, cls.input)}
-        type="text"
-        value={value}
-        disabled={disabled}
-        onChange={disabled ? undefined : handleChange}
-        {...otherProps}
-      />
-    </>
-  );
-};
+    return (
+      <>
+        <input
+          className={cn(className, cls.input)}
+          type="text"
+          value={value}
+          disabled={disabled}
+          onChange={disabled ? undefined : handleChange}
+          {...otherProps}
+        />
+      </>
+    );
+  }
+);

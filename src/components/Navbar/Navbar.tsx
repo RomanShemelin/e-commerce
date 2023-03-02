@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 import BagIcon from "@icons/bag.svg";
 import LogoIcon from "@icons/logo.png";
 import UserIcon from "@icons/user.svg";
@@ -5,7 +7,7 @@ import { Link } from "react-router-dom";
 
 import cls from "./Navbar.module.scss";
 
-export default function Navbar() {
+export const Navbar = memo(() => {
   return (
     <div className={cls.Navbar}>
       <div className="logo">
@@ -34,4 +36,4 @@ export default function Navbar() {
       </div>
     </div>
   );
-}
+});
