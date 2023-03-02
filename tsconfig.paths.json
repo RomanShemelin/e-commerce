@@ -7,7 +7,8 @@
       "@icons/*": ["public/icons/*"],
       "@configs/*": ["src/configs/*"],
       "@styles/*": ["src/styles/*"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@store/*": ["src/store/*"]
     }
   }
 }
