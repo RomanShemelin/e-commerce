@@ -1,4 +1,6 @@
+import React from 'react'
 import ReactDOM from "react-dom/client";
+import 'regenerator-runtime';
 import "./styles/index.scss";
 import { BrowserRouter } from "react-router-dom";
 
@@ -12,3 +14,6 @@ root.render(
     <App />
   </BrowserRouter>
 );
+if (module.hot) {
+  module.hot.accept();
+}
