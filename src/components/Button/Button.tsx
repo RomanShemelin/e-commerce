@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, memo } from "react";
 
 import cn from "classnames";
 
@@ -10,14 +10,8 @@ export type ButtonProps = React.PropsWithChildren<{
 }> &
   React.ButtonHTMLAttributes<HTMLButtonElement>;
 
-export const Button: FC<ButtonProps> = ({
-  className,
-  children,
-  loading,
-  disabled,
-  ...otherProps
-}) => (
-  <>
+export const Button: FC<ButtonProps> = memo(
+  ({ className, children, loading, disabled, ...otherProps }) => (
     <button
       className={cn(
         className,
@@ -39,5 +33,5 @@ export const Button: FC<ButtonProps> = ({
         children
       )}
     </button>
-  </>
+  )
 );
