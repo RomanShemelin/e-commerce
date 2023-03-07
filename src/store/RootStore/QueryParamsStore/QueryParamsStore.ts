@@ -3,6 +3,13 @@ import * as qs from "qs";
 
 type PrivateFields = "_params";
 
+export type QuerySearch =
+  | undefined
+  | string
+  | string[]
+  | qs.ParsedQs
+  | qs.ParsedQs[];
+
 export default class QueryParamsStore {
   private _params: qs.ParsedQs = {};
   private _search: string = "";
@@ -14,9 +21,7 @@ export default class QueryParamsStore {
     });
   }
 
-  getParam(
-    key: string
-  ): undefined | string | string[] | qs.ParsedQs | qs.ParsedQs[] {
+  getParam(key: string): QuerySearch {
     return this._params[key];
   }
 

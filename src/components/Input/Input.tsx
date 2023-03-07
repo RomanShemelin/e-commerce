@@ -18,16 +18,14 @@ export const Input: FC<InputProps> = memo(
     };
 
     return (
-      <>
-        <input
-          className={cn(className, cls.input)}
-          type="text"
-          value={value}
-          disabled={disabled}
-          onChange={disabled ? undefined : handleChange}
-          {...otherProps}
-        />
-      </>
+      <input
+        className={cn(className, cls.input)}
+        type="text"
+        value={value}
+        disabled={disabled}
+        onChange={disabled ? undefined : handleChange}
+        {...otherProps}
+      />
     );
   }
 );

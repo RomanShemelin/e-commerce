@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 
 import { Button } from "@components/Button";
 import { Card } from "@components/Card";
@@ -6,8 +6,9 @@ import { Input } from "@components/Input";
 import { Loader, LoaderSize } from "@components/Loader";
 import FilterIcon from "@icons/filter.svg";
 import SearchIcon from "@icons/search-normal.svg";
-import { Product } from "@pages/ProductDetail";
+import { ProductModel } from "@store/models";
 import ProductsStore from "@store/ProductsStore";
+import rootStore from "@store/RootStore/instance";
 import { useLocalStore } from "@utils/useLocalStore";
 import { observer } from "mobx-react-lite";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -21,24 +22,30 @@ const Products = observer(() => {
   const productsStore = useLocalStore(() => new ProductsStore());
 
   useEffect(() => {
-    productsStore.searchTitle = searchParams.get("search") || "";
+    productsStore.setSearchTitle(searchParams.get("search") || "");
     productsStore.getProductsList();
+    productsStore.getTotalProductCount();
   }, []);
 
-  const searchHandler = (title: string) => {
-    let search;
-    if (title) {
-      search = {
-        search: title,
-      };
-    } else {
-      search = {
-        search: "",
-      };
-    }
-    setSearchParams(search);
-    productsStore.hasMoreData = true;
-  };
+  const searchHandler = useCallback(
+    (title: string) => {
+      title ? setSearchParams({ search: title }) : setSearchParams("");
+      productsStore.setHasMoreData(true);
+    },
+    [productsStore, setSearchParams]
+  );
+
+  const handleGetProductsList = useCallback(() => {
+    productsStore.clearProductList();
+    productsStore.setProductsPage(0);
+    productsStore.getProductsList();
+    productsStore.getTotalProductCount();
+  }, [productsStore]);
+
+  const getNextProductPage = useCallback(
+    () => productsStore.getProductsList(),
+    [productsStore]
+  );
 
   return (
     <div className={cls.Products}>
@@ -57,11 +64,7 @@ const Products = observer(() => {
               placeholder="Search property"
             />
             <Button
-              onClick={() => {
-                productsStore.clearProductList();
-                productsStore.productsPage = 0;
-                productsStore.getProductsList();
-              }}
+              onClick={handleGetProductsList}
               loading={productsStore.meta === "loading"}
               disabled={!productsStore.hasMoreData}
             >
@@ -75,15 +78,13 @@ const Products = observer(() => {
         </div>
         <div className={cls.products_info}>
           <h2>Total Product</h2>
-          <div className={cls.count}>
-            {productsStore.totalProductsList.length}
-          </div>
+          <div className={cls.count}>{productsStore.totalProductsCount}</div>
         </div>
       </div>
       <InfiniteScroll
         className={cls.infinite_scroll}
         dataLength={productsStore.totalProductsList.length}
-        next={() => productsStore.getProductsList()}
+        next={getNextProductPage}
         hasMore={
           productsStore.totalProductsList.length !== 0 &&
           productsStore.hasMoreData
@@ -98,7 +99,7 @@ const Products = observer(() => {
         }
       >
         <div className={cls.products_list}>
-          {productsStore.totalProductsList.map((product: Product) => (
+          {productsStore.totalProductsList.map((product: ProductModel) => (
             <Card
               key={product.id}
               id={product.id}
@@ -106,7 +107,10 @@ const Products = observer(() => {
               category={product.category.name}
               title={product.title}
               content={product.price}
-              onClick={() => navigate(`/product/${product.id}`)}
+              onClick={() => {
+                rootStore.query.setSearch(`productId=${product.id}`);
+                navigate(`/product/${product.id}`);
+              }}
             />
           ))}
         </div>
