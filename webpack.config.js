@@ -74,7 +74,6 @@ module.exports = {
       },
       {
         test: /\.[tj]sx?$/,
-        exclude: /node_modules/,
         use: "babel-loader",
       },
       {

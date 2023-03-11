@@ -4,7 +4,6 @@ module.exports = (api) => {
   const presets = [
     "@babel/preset-env",
     "@babel/preset-typescript",
-    "mobx",
     [
       "@babel/preset-react",
       {
