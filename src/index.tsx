@@ -1,6 +1,7 @@
-import React from 'react'
+import React from "react";
+
 import ReactDOM from "react-dom/client";
-import 'regenerator-runtime';
+import "regenerator-runtime";
 import "./styles/index.scss";
 import { BrowserRouter } from "react-router-dom";
 
