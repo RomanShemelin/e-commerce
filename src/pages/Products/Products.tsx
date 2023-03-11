@@ -85,10 +85,7 @@ const Products = observer(() => {
         className={cls.infinite_scroll}
         dataLength={productsStore.totalProductsList.length}
         next={getNextProductPage}
-        hasMore={
-          productsStore.totalProductsList.length !== 0 &&
-          productsStore.hasMoreData
-        }
+        hasMore={productsStore.hasMoreData}
         loader={<Loader size={LoaderSize.l} />}
         endMessage={
           productsStore.meta === "error" ? (
