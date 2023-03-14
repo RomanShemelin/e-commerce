@@ -2,9 +2,9 @@ import React, { useCallback, useEffect } from "react";
 
 import { Button } from "@components/Button";
 import { Card } from "@components/Card";
+import { Dropdown, Option } from "@components/Dropdown/Dropdown";
 import { Input } from "@components/Input";
 import { Loader, LoaderSize } from "@components/Loader";
-import FilterIcon from "@icons/filter.svg";
 import SearchIcon from "@icons/search-normal.svg";
 import { ProductModel } from "@store/models";
 import ProductsStore from "@store/ProductsStore";
@@ -25,6 +25,7 @@ const Products = observer(() => {
     productsStore.setSearchTitle(searchParams.get("search") || "");
     productsStore.getProductsList();
     productsStore.getTotalProductCount();
+    productsStore.getCategoriesList();
   }, []);
 
   const searchHandler = useCallback(
@@ -46,6 +47,18 @@ const Products = observer(() => {
     () => productsStore.getProductsList(),
     [productsStore]
   );
+
+  const pluralizeOptions = (elements: Option[]) =>
+    elements.map((el: Option) => el.value).join();
+
+  const handleChangeFilter = (value: Option[]) => {
+    productsStore.changeFilterOptions(value);
+    productsStore.setCategoryId(value[0]?.key || "");
+    productsStore.clearProductList();
+    productsStore.setProductsPage(0);
+    productsStore.getProductsList();
+    productsStore.getTotalProductCount();
+  };
 
   return (
     <div className={cls.Products}>
@@ -71,10 +84,12 @@ const Products = observer(() => {
               Find Now
             </Button>
           </div>
-          <Button className={cls.filter_button}>
-            <img src={FilterIcon} alt="filter" />
-            Filter
-          </Button>
+          <Dropdown
+            options={productsStore.categoriesList}
+            value={productsStore.filterValue}
+            pluralizeOptions={pluralizeOptions}
+            onChange={handleChangeFilter}
+          />
         </div>
         <div className={cls.products_info}>
           <h2>Total Product</h2>
