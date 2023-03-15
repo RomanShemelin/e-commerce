@@ -19,7 +19,14 @@ const ProductDetail = observer(() => {
 
   useEffect(() => {
     productDetailStore.getProductDetail(productId);
+    console.log(productId);
   }, [productDetailStore, productId]);
+
+  const addToCart = () => {
+    if (productDetailStore.productDetail) {
+      rootStore.cart.addToCart(productDetailStore.productDetail);
+    }
+  };
 
   return (
     <div className={cls.ProductDetail}>
@@ -40,7 +47,9 @@ const ProductDetail = observer(() => {
             ${productDetailStore.productDetail?.price}
           </p>
           <Button className={cls.buy}>Buy Now</Button>
-          <Button className={cls.add}>Add to Card</Button>
+          <Button className={cls.add} onClick={addToCart}>
+            Add to Card
+          </Button>
         </div>
       </div>
       <h2 className={cls.related_title}>Related Items</h2>

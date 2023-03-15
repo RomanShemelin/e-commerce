@@ -46,7 +46,7 @@ module.exports = {
   output: {
     path: buildPath,
     filename: "[name].[contenthash].js",
-    clean: true,
+    publicPath: "/",
   },
 
   plugins: [
@@ -105,5 +105,6 @@ module.exports = {
     port: 3000,
     hot: true,
     open: true,
+    historyApiFallback: true,
   },
 };
