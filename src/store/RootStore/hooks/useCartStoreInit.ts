@@ -1,6 +1,7 @@
 import rootStore from "../instance";
 
 export const useCartStoreInit = (): void => {
-  const cartItems = JSON.parse(localStorage.getItem("cart") || "");
+  const cartField = localStorage.getItem("cart");
+  const cartItems = cartField ? JSON.parse(cartField) : [];
   rootStore.cart.setCartItems(cartItems);
 };

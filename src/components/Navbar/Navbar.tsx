@@ -1,6 +1,7 @@
 import { memo, useState } from "react";
 
 import { Cart } from "@components/Cart";
+import { Modal } from "@components/Modal/Modal";
 import BagIcon from "@icons/bag.svg";
 import LogoIcon from "@icons/logo.png";
 import UserIcon from "@icons/user.svg";
@@ -33,7 +34,7 @@ const Navbar = observer(() => {
           </Link>
         </div>
         <div className={cls.user}>
-          <div className={cls.cart} onClick={() => setOpen(!open)}>
+          <div className={cls.cart} onClick={() => setOpen(true)}>
             <img src={BagIcon} alt="bag" />
             <span>{rootStore.cart.cartItems.length}</span>
           </div>
@@ -42,7 +43,9 @@ const Navbar = observer(() => {
           </Link>
         </div>
       </div>
-      {open && <Cart />}
+      <Modal isOpen={open} onClose={() => setOpen(false)}>
+        {<Cart />}
+      </Modal>
     </>
   );
 });

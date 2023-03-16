@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { Button } from "@components/Button";
 import { Card } from "@components/Card";
@@ -16,15 +16,18 @@ const ProductDetail = observer(() => {
   const productDetailStore = useLocalStore(() => new ProductDetailStore());
   rootStore.query.setSearch(`productId=${id}`);
   const productId = rootStore.query.getParam("productId");
+  const [quantity] = useState(1);
 
   useEffect(() => {
     productDetailStore.getProductDetail(productId);
-    console.log(productId);
   }, [productDetailStore, productId]);
 
   const addToCart = () => {
     if (productDetailStore.productDetail) {
-      rootStore.cart.addToCart(productDetailStore.productDetail);
+      rootStore.cart.addToCart({
+        product: productDetailStore.productDetail,
+        quantity: quantity,
+      });
     }
   };
 

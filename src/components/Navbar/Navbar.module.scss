@@ -54,6 +54,10 @@
 .cart {
   position: relative;
   cursor: pointer;
+  img:hover {
+    filter: invert(46%) sepia(32%) saturate(427%) hue-rotate(126deg)
+      brightness(96%) contrast(86%);
+  }
   span {
     position: absolute;
     width: 20px;

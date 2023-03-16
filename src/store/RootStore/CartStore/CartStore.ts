@@ -1,68 +1,75 @@
 import { ProductModel } from "@store/models";
+import { CART_LOCALSTORAGE_KEY } from "@utils/localstorage";
 import { action, computed, makeObservable, observable } from "mobx";
 
-type PrivateFields = "_cartItems" | "_subtotal";
+export interface CartItem {
+  product: ProductModel;
+  quantity: number;
+}
+
+type PrivateFields = "_cartItems";
 
 export default class CartStore {
-  private _cartItems: ProductModel[] = [];
-  private _subtotal = 0;
+  private _cartItems: CartItem[] = [];
 
   constructor() {
     makeObservable<CartStore, PrivateFields>(this, {
       _cartItems: observable,
-      _subtotal: observable,
       cartItems: computed,
-      subtotal: computed,
       addToCart: action,
       removeFromCart: action,
       resetCart: action,
-      getSubtotal: action,
       setCartItems: action,
     });
   }
 
-  get cartItems(): ProductModel[] {
+  get cartItems(): CartItem[] {
     return this._cartItems;
   }
 
-  get subtotal() {
-    return this._subtotal;
-  }
-
-  setCartItems(value: ProductModel[]) {
+  setCartItems(value: CartItem[]) {
     this._cartItems = value;
-    this.getSubtotal(this._cartItems);
   }
 
-  addToCart(item: ProductModel) {
+  addToCart(item: CartItem) {
     const isInCart = this._cartItems.find(
-      (cartItem) => cartItem.id === item.id
+      (cartItem) => cartItem.product.id === item.product.id
     );
     if (isInCart) {
-      return;
+      this.cartItems.map((cartItem) => {
+        if (cartItem.product.id === item.product.id) {
+          return (cartItem.quantity += item.quantity);
+        }
+        return cartItem;
+      });
+      localStorage.setItem(
+        CART_LOCALSTORAGE_KEY,
+        JSON.stringify(this._cartItems)
+      );
     } else {
       this._cartItems.push(item);
-      this.getSubtotal(this._cartItems);
-      localStorage.setItem("cart", JSON.stringify(this._cartItems));
+      localStorage.setItem(
+        CART_LOCALSTORAGE_KEY,
+        JSON.stringify(this._cartItems)
+      );
     }
   }
 
   removeFromCart(id: number) {
-    this._cartItems = this._cartItems.filter((cartItem) => cartItem.id !== id);
-    this.getSubtotal(this._cartItems);
-    localStorage.setItem("cart", JSON.stringify(this._cartItems));
-  }
-
-  getSubtotal(items: ProductModel[]) {
-    this._subtotal = this._cartItems.reduce(
-      (total, priceItem) => total + priceItem.price,
-      0
+    this._cartItems = this._cartItems.filter(
+      (cartItem) => cartItem.product.id !== id
+    );
+    localStorage.setItem(
+      CART_LOCALSTORAGE_KEY,
+      JSON.stringify(this._cartItems)
     );
   }
 
   resetCart() {
     this._cartItems = [];
-    this._subtotal = 0;
-    localStorage.setItem("cart", JSON.stringify(this._cartItems));
+    localStorage.setItem(
+      CART_LOCALSTORAGE_KEY,
+      JSON.stringify(this._cartItems)
+    );
   }
 }
