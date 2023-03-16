@@ -2,13 +2,17 @@ import { Navbar } from "@components/Navbar";
 import { ROUTES } from "@configs/routes";
 import { ProductDetail } from "@pages/ProductDetail";
 import Products from "@pages/Products";
-import { useQueryParamsStoreInit } from "@store/RootStore/hooks/useQueryParamsStoreInit";
+import {
+  useCartStoreInit,
+  useQueryParamsStoreInit,
+} from "@store/RootStore/hooks";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import "./App.scss";
 
-function App() {
+const App = () => {
   useQueryParamsStoreInit();
+  useCartStoreInit();
   return (
     <div className="app">
       <Navbar />
@@ -19,6 +23,6 @@ function App() {
       </Routes>
     </div>
   );
-}
+};
 
 export default App;

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { Button } from "@components/Button";
 import { Card } from "@components/Card";
@@ -16,10 +16,20 @@ const ProductDetail = observer(() => {
   const productDetailStore = useLocalStore(() => new ProductDetailStore());
   rootStore.query.setSearch(`productId=${id}`);
   const productId = rootStore.query.getParam("productId");
+  const [quantity] = useState(1);
 
   useEffect(() => {
     productDetailStore.getProductDetail(productId);
   }, [productDetailStore, productId]);
+
+  const addToCart = () => {
+    if (productDetailStore.productDetail) {
+      rootStore.cart.addToCart({
+        product: productDetailStore.productDetail,
+        quantity: quantity,
+      });
+    }
+  };
 
   return (
     <div className={cls.ProductDetail}>
@@ -40,7 +50,9 @@ const ProductDetail = observer(() => {
             ${productDetailStore.productDetail?.price}
           </p>
           <Button className={cls.buy}>Buy Now</Button>
-          <Button className={cls.add}>Add to Card</Button>
+          <Button className={cls.add} onClick={addToCart}>
+            Add to Card
+          </Button>
         </div>
       </div>
       <h2 className={cls.related_title}>Related Items</h2>

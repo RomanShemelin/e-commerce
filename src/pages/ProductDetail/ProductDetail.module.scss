@@ -32,9 +32,13 @@
     }
     .add {
       margin-left: 20px;
-      background-color: var(--font-button-color);
+      background: var(--font-button-color);
       color: var(--font-primary-color);
       border: 2px solid #f3f3f3;
+      &:active {
+        background: var(--bg-primary-color-hover);
+        opacity: 0.5;
+      }
     }
   }
 }
