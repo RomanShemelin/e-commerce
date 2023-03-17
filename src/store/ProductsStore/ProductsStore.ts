@@ -1,5 +1,6 @@
+import { Option } from "@components/Dropdown/Dropdown";
 import { API_ENDPOINTS } from "@configs/api";
-import { ProductModel } from "@store/models";
+import { ProductCategoryModel, ProductModel } from "@store/models";
 import rootStore from "@store/RootStore/instance";
 import { QuerySearch } from "@store/RootStore/QueryParamsStore";
 import { Meta } from "@utils/meta";
@@ -21,7 +22,11 @@ type PrivateFields =
   | "_searchTitle"
   | "_productsPage"
   | "_hasMoreData"
-  | "_totalProductsCount";
+  | "_totalProductsCount"
+  | "_categoriesList"
+  | "_filterValue"
+  | "_categoryId"
+  | "_searchCategory";
 
 export default class ProductsStore implements ILocalStore {
   private _totalProductsList: ProductModel[] = [];
@@ -30,6 +35,10 @@ export default class ProductsStore implements ILocalStore {
   private _searchTitle: QuerySearch = "";
   private _productsPage = 0;
   private _hasMoreData = true;
+  private _categoriesList: Option[] = [];
+  private _filterValue: Option = { key: "", value: "" };
+  private _categoryId = "";
+  private _searchCategory: QuerySearch = "";
 
   constructor() {
     makeObservable<ProductsStore, PrivateFields>(this, {
@@ -39,18 +48,28 @@ export default class ProductsStore implements ILocalStore {
       _searchTitle: observable,
       _productsPage: observable,
       _hasMoreData: observable,
+      _categoriesList: observable,
+      _filterValue: observable,
+      _categoryId: observable,
+      _searchCategory: observable,
       totalProductsList: computed,
       totalProductsCount: computed,
       meta: computed,
       searchTitle: computed,
       hasMoreData: computed,
       productsPage: computed,
+      categoriesList: computed,
+      filterValue: computed,
       getProductsList: action,
       getTotalProductCount: action,
       clearProductList: action,
       setProductsPage: action,
       setHasMoreData: action,
       setSearchTitle: action,
+      getCategoriesList: action,
+      changeFilterOptions: action,
+      setCategoryId: action,
+      setSearchCategory: action,
     });
   }
 
@@ -78,6 +97,14 @@ export default class ProductsStore implements ILocalStore {
     return this._productsPage;
   }
 
+  get categoriesList() {
+    return this._categoriesList;
+  }
+
+  get filterValue() {
+    return this._filterValue;
+  }
+
   setSearchTitle(value: QuerySearch) {
     this._searchTitle = value;
   }
@@ -90,12 +117,16 @@ export default class ProductsStore implements ILocalStore {
     this._productsPage = value;
   }
 
+  setCategoryId(value: string) {
+    this._categoryId = value;
+  }
+
   async getProductsList(): Promise<void> {
     try {
       this._meta = Meta.loading;
       const result = await axios({
         method: "get",
-        url: `${API_ENDPOINTS.PRODUCTS}?title=${this._searchTitle}&offset=${this._productsPage}&limit=10`,
+        url: `${API_ENDPOINTS.PRODUCTS}?title=${this._searchTitle}&categoryId=${this._categoryId}&offset=${this._productsPage}&limit=10`,
       });
       runInAction(() => {
         this._meta = Meta.success;
@@ -117,7 +148,7 @@ export default class ProductsStore implements ILocalStore {
     try {
       const result = await axios({
         method: "get",
-        url: `${API_ENDPOINTS.PRODUCTS}?title=${this._searchTitle}`,
+        url: `${API_ENDPOINTS.PRODUCTS}?title=${this._searchTitle}&categoryId=${this._categoryId}`,
       });
       runInAction(() => {
         this._totalProductsCount = result.data.length;
@@ -130,6 +161,42 @@ export default class ProductsStore implements ILocalStore {
 
   clearProductList() {
     this._totalProductsList = [];
+  }
+
+  async getCategoriesList(): Promise<void> {
+    try {
+      const result = await axios({
+        method: "get",
+        url: `${API_ENDPOINTS.CATEGORIES}`,
+      });
+      const categories = result.data.map((category: ProductCategoryModel) => ({
+        key: category.id,
+        value: category.name,
+      }));
+      runInAction(() => {
+        this._categoriesList = [...categories];
+        const filterValue = this._categoriesList.find(
+          (category) => category.value === this._searchCategory
+        );
+        if (filterValue) {
+          this._filterValue = filterValue;
+          this._categoryId = filterValue.key;
+        }
+        this.getProductsList();
+        this.getTotalProductCount();
+      });
+    } catch (error) {
+      this._meta = Meta.error;
+      this._categoriesList = [];
+    }
+  }
+
+  changeFilterOptions(value: Option) {
+    this._filterValue = value;
+  }
+
+  setSearchCategory(value: string) {
+    this._searchCategory = value;
   }
 
   private readonly _qpReaction: IReactionDisposer = reaction(
