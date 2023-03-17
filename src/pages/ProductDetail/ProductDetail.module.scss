@@ -1,12 +1,14 @@
 .content {
   display: flex;
   gap: 50px;
-  margin: 100px 100px 50px 100px;
+  margin: 0px 100px 50px 100px;
+  position: relative;
 
   .image {
     width: 600px;
     height: 600px;
   }
+
   .detail {
     .title {
       font: var(--font-xl);
@@ -39,6 +41,36 @@
         background: var(--bg-primary-color-hover);
         opacity: 0.5;
       }
+    }
+  }
+}
+.navigation {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  gap: 420px;
+  left: 2%;
+  top: 50%;
+
+  .arrow {
+    display: flex;
+    justify-content: center;
+    color: var(--font-button-color);
+    background: var(--font-button-secondary-color);
+    height: 64px;
+    width: 64px;
+    border-radius: 50%;
+    opacity: 70%;
+    font-size: 40px;
+    font-weight: lighter;
+    &:hover {
+      background-color: var(--font-primary-color);
+    }
+    div {
+      height: 30px;
+      width: 30px;
     }
   }
 }
