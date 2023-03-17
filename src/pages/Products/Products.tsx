@@ -9,6 +9,7 @@ import SearchIcon from "@icons/search-normal.svg";
 import { ProductModel } from "@store/models";
 import ProductsStore from "@store/ProductsStore";
 import rootStore from "@store/RootStore/instance";
+import { Meta } from "@utils/meta";
 import { useLocalStore } from "@utils/useLocalStore";
 import { observer } from "mobx-react-lite";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -41,6 +42,7 @@ const Products = observer(() => {
   );
 
   const handleGetProductsList = useCallback(() => {
+    productsStore.setMeta(Meta.loading);
     productsStore.clearProductList();
     productsStore.setProductsPage(0);
     productsStore.getProductsList();

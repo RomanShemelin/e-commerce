@@ -66,6 +66,7 @@ export default class ProductsStore implements ILocalStore {
       setProductsPage: action,
       setHasMoreData: action,
       setSearchTitle: action,
+      setMeta: action,
       getCategoriesList: action,
       changeFilterOptions: action,
       setCategoryId: action,
@@ -120,10 +121,12 @@ export default class ProductsStore implements ILocalStore {
   setCategoryId(value: string) {
     this._categoryId = value;
   }
+  setMeta(value: Meta) {
+    this._meta = value;
+  }
 
   async getProductsList(): Promise<void> {
     try {
-      this._meta = Meta.loading;
       const result = await axios({
         method: "get",
         url: `${API_ENDPOINTS.PRODUCTS}?title=${this._searchTitle}&categoryId=${this._categoryId}&offset=${this._productsPage}&limit=10`,
