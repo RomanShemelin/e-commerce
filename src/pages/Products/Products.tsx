@@ -23,14 +23,18 @@ const Products = observer(() => {
 
   useEffect(() => {
     productsStore.setSearchTitle(searchParams.get("search") || "");
-    productsStore.getProductsList();
-    productsStore.getTotalProductCount();
+    productsStore.setSearchCategory(searchParams.get("category") || "");
     productsStore.getCategoriesList();
   }, []);
 
   const searchHandler = useCallback(
     (title: string) => {
-      title ? setSearchParams({ search: title }) : setSearchParams("");
+      setSearchParams((searchParams) => {
+        title
+          ? searchParams.set("search", title)
+          : searchParams.delete("search");
+        return searchParams;
+      });
       productsStore.setHasMoreData(true);
     },
     [productsStore, setSearchParams]
@@ -48,16 +52,19 @@ const Products = observer(() => {
     [productsStore]
   );
 
-  const pluralizeOptions = (elements: Option[]) =>
-    elements.map((el: Option) => el.value).join();
-
-  const handleChangeFilter = (value: Option[]) => {
-    productsStore.changeFilterOptions(value);
-    productsStore.setCategoryId(value[0]?.key || "");
+  const handleChangeFilter = (option: Option) => {
+    productsStore.changeFilterOptions(option);
+    productsStore.setCategoryId(option.key || "");
     productsStore.clearProductList();
     productsStore.setProductsPage(0);
     productsStore.getProductsList();
     productsStore.getTotalProductCount();
+    setSearchParams((searchParams) => {
+      option.value
+        ? searchParams.set("category", option.value)
+        : searchParams.delete("category");
+      return searchParams;
+    });
   };
 
   return (
@@ -87,7 +94,6 @@ const Products = observer(() => {
           <Dropdown
             options={productsStore.categoriesList}
             value={productsStore.filterValue}
-            pluralizeOptions={pluralizeOptions}
             onChange={handleChangeFilter}
           />
         </div>

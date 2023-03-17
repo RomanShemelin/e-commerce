@@ -25,7 +25,8 @@ type PrivateFields =
   | "_totalProductsCount"
   | "_categoriesList"
   | "_filterValue"
-  | "_categoryId";
+  | "_categoryId"
+  | "_searchCategory";
 
 export default class ProductsStore implements ILocalStore {
   private _totalProductsList: ProductModel[] = [];
@@ -35,8 +36,9 @@ export default class ProductsStore implements ILocalStore {
   private _productsPage = 0;
   private _hasMoreData = true;
   private _categoriesList: Option[] = [];
-  private _filterValue: Option[] = [];
+  private _filterValue: Option = { key: "", value: "" };
   private _categoryId = "";
+  private _searchCategory: QuerySearch = "";
 
   constructor() {
     makeObservable<ProductsStore, PrivateFields>(this, {
@@ -49,6 +51,7 @@ export default class ProductsStore implements ILocalStore {
       _categoriesList: observable,
       _filterValue: observable,
       _categoryId: observable,
+      _searchCategory: observable,
       totalProductsList: computed,
       totalProductsCount: computed,
       meta: computed,
@@ -66,6 +69,7 @@ export default class ProductsStore implements ILocalStore {
       getCategoriesList: action,
       changeFilterOptions: action,
       setCategoryId: action,
+      setSearchCategory: action,
     });
   }
 
@@ -171,6 +175,15 @@ export default class ProductsStore implements ILocalStore {
       }));
       runInAction(() => {
         this._categoriesList = [...categories];
+        const filterValue = this._categoriesList.find(
+          (category) => category.value === this._searchCategory
+        );
+        if (filterValue) {
+          this._filterValue = filterValue;
+          this._categoryId = filterValue.key;
+        }
+        this.getProductsList();
+        this.getTotalProductCount();
       });
     } catch (error) {
       this._meta = Meta.error;
@@ -178,8 +191,12 @@ export default class ProductsStore implements ILocalStore {
     }
   }
 
-  changeFilterOptions(value: Option[]) {
+  changeFilterOptions(value: Option) {
     this._filterValue = value;
+  }
+
+  setSearchCategory(value: string) {
+    this._searchCategory = value;
   }
 
   private readonly _qpReaction: IReactionDisposer = reaction(

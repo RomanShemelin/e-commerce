@@ -1,39 +1,32 @@
 import { FC, useState } from "react";
 
 import FilterIcon from "@icons/filter.svg";
+import cn from "classnames";
 
 import cls from "./Dropdown.module.scss";
 
 export type Option = {
-  /** Ключ варианта, используется для отправки на бек/использования в коде */
   key: string;
-  /** Значение варианта, отображается пользователю */
   value: string;
 };
-export type MultiDropdownProps = {
-  /** Массив возможных вариантов для выбора */
+export type DropdownProps = {
   options: Option[];
-  /** Текущие выбранные значения поля, может быть пустым */
-  value: Option[];
-  /** Callback, вызываемый при выборе варианта */
-  onChange: (value: Option[]) => void;
-  /** Заблокирован ли дропдаун */
+  value: Option;
+  onChange: (value: Option) => void;
   disabled?: boolean;
-  /** Преобразовать выбранные значения в строку. Отображается в дропдауне в качестве выбранного значения */
-  pluralizeOptions: (value: Option[]) => string;
 };
-export const Dropdown: FC<MultiDropdownProps> = (props) => {
-  const { options, value, onChange, disabled, pluralizeOptions } = props;
+export const Dropdown: FC<DropdownProps> = (props) => {
+  const { options, value, onChange, disabled } = props;
   const [isOpen, setIsopen] = useState(false);
 
   function isSelected(selectedOption: Option) {
-    return !!value.find((option) => option.key === selectedOption.key);
+    return !!(value.key === selectedOption.key);
   }
 
   function onSelect(selectedOption: Option) {
     if (!isSelected(selectedOption)) {
-      onChange([selectedOption]);
-    } else onChange([]);
+      onChange(selectedOption);
+    } else onChange({ key: "", value: "" });
   }
 
   function renderDropDown(options: Option[]) {
@@ -59,17 +52,19 @@ export const Dropdown: FC<MultiDropdownProps> = (props) => {
         disabled={disabled}
         onClick={() => setIsopen((isOpen) => !isOpen)}
       >
-        {value.length === 0 ? (
+        {!value.key ? (
           <>
             <img src={FilterIcon} alt="filter" />
             Filter
           </>
         ) : (
-          pluralizeOptions(value)
+          value.value
         )}
       </button>
-      {isOpen && !disabled && (
-        <ul className={cls.list}>{renderDropDown(options)}</ul>
+      {!disabled && (
+        <ul className={cn(cls.list, { [cls.list_open]: isOpen })}>
+          {renderDropDown(options)}
+        </ul>
       )}
     </div>
   );
