@@ -12,23 +12,32 @@ import {
   runInAction,
 } from "mobx";
 
-type PrivateFields = "_productDetail" | "_relatedProductsList" | "_meta";
+type PrivateFields =
+  | "_productDetail"
+  | "_relatedProductsList"
+  | "_meta"
+  | "_selectedImageIndex";
 
 export default class ProductDetailStore implements ILocalStore {
   private _productDetail: ProductModel | null = null;
   private _relatedProductsList: ProductModel[] = [];
   private _meta: Meta = Meta.initial;
+  private _selectedImageIndex = 0;
 
   constructor() {
     makeObservable<ProductDetailStore, PrivateFields>(this, {
       _relatedProductsList: observable,
       _productDetail: observable,
       _meta: observable,
+      _selectedImageIndex: observable,
       productDetail: computed,
+      selectedImageIndex: computed,
       relatedProductsList: computed,
       meta: computed,
       getProductDetail: action,
       getRelatedProductsList: action,
+      nextSlide: action,
+      prevSlide: action,
     });
   }
 
@@ -42,6 +51,22 @@ export default class ProductDetailStore implements ILocalStore {
 
   get meta() {
     return this._meta;
+  }
+
+  get selectedImageIndex() {
+    return this._selectedImageIndex;
+  }
+
+  nextSlide() {
+    if (this._productDetail) {
+      if (this._selectedImageIndex !== this._productDetail.images.length - 1) {
+        this._selectedImageIndex += 1;
+      }
+    }
+  }
+
+  prevSlide() {
+    if (this._selectedImageIndex > 0) this._selectedImageIndex -= 1;
   }
 
   async getProductDetail(id: QuerySearch): Promise<void> {

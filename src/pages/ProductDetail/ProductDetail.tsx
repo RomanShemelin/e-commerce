@@ -34,9 +34,27 @@ const ProductDetail = observer(() => {
   return (
     <div className={cls.ProductDetail}>
       <div className={cls.content}>
+        <div className={cls.navigation}>
+          <Button
+            className={cls.arrow}
+            onClick={() => productDetailStore.prevSlide()}
+          >
+            {"<"}
+          </Button>
+          <Button
+            className={cls.arrow}
+            onClick={() => productDetailStore.nextSlide()}
+          >
+            {">"}
+          </Button>
+        </div>
         <img
           className={cls.image}
-          src={productDetailStore.productDetail?.images[0]}
+          src={
+            productDetailStore.productDetail?.images[
+              productDetailStore.selectedImageIndex
+            ]
+          }
           alt={productDetailStore.productDetail?.title}
         />
         <div className={cls.detail}>
