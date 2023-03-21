@@ -46,7 +46,7 @@ module.exports = {
   output: {
     path: buildPath,
     filename: "[name].[contenthash].js",
-    publicPath: "/",
+    publicPath: isProd ? "/e-commerce/" : "/",
   },
 
   plugins: [
