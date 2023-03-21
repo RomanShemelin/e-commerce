@@ -1,8 +1,8 @@
 {
   "name": "e-commerce",
   "version": "0.1.0",
-  "private": false,
-  "homepage": "https://romanshemelin.github.io/e-commerce",
+  "private": true,
+  "homepage": "https://RomanShemelin.github.io/e-commerce",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
